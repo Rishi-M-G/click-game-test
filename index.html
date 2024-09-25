@@ -21,6 +21,7 @@
     <h1>Job Hunt Runner</h1>
     <p>Press Space to Jump! Avoid the hurdles and reach the job offer!</p>
     <canvas id="gameCanvas" width="800" height="300"></canvas>
+
     <script>
         // Basic setup
         const canvas = document.getElementById('gameCanvas');
@@ -32,15 +33,18 @@
         let jumpHeight = 0;
         let jumping = false;
 
-        // Character setup
+        // Character setup with your sprite
         const character = {
             x: 50,
             y: 250,
-            width: 30,
-            height: 30,
-            color: 'blue',
+            width: 50,  // Adjust these to match your sprite's dimensions
+            height: 50,
+            sprite: new Image(),
             jump: false
         };
+
+        // Load your sprite image (replace with your sprite's URL or path)
+        character.sprite.src = 'me.png'; // <- Replace this with the path to your sprite image
 
         // Hurdle setup
         const hurdles = [];
@@ -72,6 +76,19 @@
             });
         }
 
+        // Draw character sprite
+        function drawCharacter() {
+            // Draw the character sprite image
+            ctx.drawImage(character.sprite, character.x, character.y - jumpHeight, character.width, character.height);
+
+            // Handle jump mechanics
+            if (jumpHeight > 0) {
+                jumpHeight -= 5; // Control jump speed
+            } else {
+                jumping = false; // Back to ground
+            }
+        }
+
         // Draw function
         function draw() {
             if (gameOver) return;
@@ -80,15 +97,7 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             // Draw character
-            ctx.fillStyle = character.color;
-            ctx.fillRect(character.x, character.y - jumpHeight, character.width, character.height);
-
-            // Handle jump mechanics
-            if (jumpHeight > 0) {
-                jumpHeight -= 5; // Control jump speed
-            } else {
-                jumping = false; // Back to ground
-            }
+            drawCharacter();
 
             // Draw and update hurdles
             for (let i = 0; i < hurdles.length; i++) {
@@ -127,5 +136,6 @@
         setInterval(createHurdle, 2000); // Generate hurdles every 2 seconds
         draw();
     </script>
+
 </body>
 </html>

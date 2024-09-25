@@ -23,131 +23,149 @@
     <canvas id="gameCanvas" width="800" height="300"></canvas>
 
     <script>
-        // Basic setup
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
+    // Game Variables
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    let gameOver = false;
+    let score = 0;
+    let jumpHeight = 0;
+    let jumping = false;
 
-        // Game Variables
-        let gameOver = false;
-        let score = 0;
-        let jumpHeight = 0;
-        let jumping = false;
+    // Character setup (64x64 dimensions)
+    const character = {
+        x: 50,
+        y: 250,
+        width: 64,  // Adjusted to match your sprite's dimensions
+        height: 64,
+        sprite: new Image(),
+        jump: false
+    };
 
-        // Character setup with your sprite
-        const character = {
-            x: 50,
-            y: 250,
-            width: 50,  // Adjust these to match your sprite's dimensions
-            height: 50,
-            sprite: new Image(),
-            jump: false
-        };
+    // Load character sprite
+    character.sprite.src = 'me.png';
+    let spriteLoaded = false;
 
-        // Load your sprite image (replace with your sprite's URL or path)
-        character.sprite.src = 'me.png'; // <- Replace this with the path to your sprite image
-        let spriteLoaded = false;
+    character.sprite.onload = function() {
+        spriteLoaded = true;
+    };
 
-        // Ensure the image is loaded before drawing
-        character.sprite.onload = function() {
-            spriteLoaded = true;
-        };
+    // Different types of obstacles
+    const hurdleTypes = [
+        { label: 'ATS', color: 'red', width: 40, height: 60 },       // ATS Hurdle
+        { label: '?', color: 'green', width: 40, height: 60 },       // Interview Hurdle
+        { label: 'HR', color: 'blue', width: 40, height: 60 },       // HR Round Hurdle
+    ];
 
-        // Hurdle setup
-        const hurdles = [];
-        const hurdleWidth = 20;
-        const hurdleHeight = 40;
-        const hurdleGap = 200;
-        let hurdleSpeed = 5;
+    // Hurdles setup
+    const hurdles = [];
+    const hurdleGap = 200;
+    let hurdleSpeed = 5;
 
-        // Jumping function
-        function handleJump() {
-            if (!jumping) {
-                jumping = true;
-                jumpHeight = 100; // Jump to 100px height
-            }
+    // Jumping function
+    function handleJump() {
+        if (!jumping) {
+            jumping = true;
+            jumpHeight = 150; // Adjusted jump height for 64x64 character
         }
+    }
 
-        // Key controls
-        document.addEventListener('keydown', function(event) {
-            if (event.code === 'Space') {
-                handleJump();
-            }
+    // Key controls for jumping
+    document.addEventListener('keydown', function(event) {
+        if (event.code === 'Space') {
+            handleJump();
+        }
+    });
+
+    // Hurdle creation logic
+    function createHurdle() {
+        const randomType = hurdleTypes[Math.floor(Math.random() * hurdleTypes.length)];
+        hurdles.push({
+            x: canvas.width,
+            y: canvas.height - randomType.height,
+            width: randomType.width,
+            height: randomType.height,
+            type: randomType
         });
+    }
 
-        // Hurdle creation
-        function createHurdle() {
-            hurdles.push({
-                x: canvas.width,
-                y: canvas.height - hurdleHeight
-            });
+    // Draw character sprite
+    function drawCharacter() {
+        if (spriteLoaded) {
+            // Draw character sprite image
+            ctx.drawImage(character.sprite, character.x, character.y - jumpHeight, character.width, character.height);
+        } else {
+            // Draw a blue box if sprite isn't loaded yet
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(character.x, character.y - jumpHeight, character.width, character.height);
         }
 
-        // Draw character sprite
-        function drawCharacter() {
-            if (spriteLoaded) {
-                // Draw the character sprite image
-                ctx.drawImage(character.sprite, character.x, character.y - jumpHeight, character.width, character.height);
-            } else {
-                // Fallback: draw a blue square if the sprite isn't loaded yet
-                ctx.fillStyle = 'blue';
-                ctx.fillRect(character.x, character.y - jumpHeight, character.width, character.height);
+        // Handle jump mechanics
+        if (jumpHeight > 0) {
+            jumpHeight -= 5; // Control jump descent speed
+        } else {
+            jumping = false; // Back to ground
+        }
+    }
+
+    // Draw and update hurdles
+    function drawHurdles() {
+        for (let i = 0; i < hurdles.length; i++) {
+            let hurdle = hurdles[i];
+            hurdle.x -= hurdleSpeed;
+
+            // Draw the hurdle
+            ctx.fillStyle = hurdle.type.color;
+            ctx.fillRect(hurdle.x, hurdle.y, hurdle.width, hurdle.height);
+
+            // Add the label on the hurdle (ATS, ?, HR)
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 20px Arial';
+            ctx.fillText(hurdle.type.label, hurdle.x + 10, hurdle.y + 40);
+
+            // Check for collision
+            if (
+                character.x < hurdle.x + hurdle.width &&
+                character.x + character.width > hurdle.x &&
+                character.y - jumpHeight + character.height > hurdle.y
+            ) {
+                gameOver = true;
+                alert('Game Over! You hit a hurdle. Try again!');
+                document.location.reload();
             }
 
-            // Handle jump mechanics
-            if (jumpHeight > 0) {
-                jumpHeight -= 5; // Control jump speed
-            } else {
-                jumping = false; // Back to ground
+            // Remove hurdles that have gone off screen
+            if (hurdle.x + hurdle.width < 0) {
+                hurdles.splice(i, 1);
+                score++;
             }
         }
+    }
 
-        // Draw function
-        function draw() {
-            if (gameOver) return;
+    // Main draw function
+    function draw() {
+        if (gameOver) return;
 
-            // Clear canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Draw character
-            drawCharacter();
+        // Draw character
+        drawCharacter();
 
-            // Draw and update hurdles
-            for (let i = 0; i < hurdles.length; i++) {
-                let hurdle = hurdles[i];
-                hurdle.x -= hurdleSpeed;
-                ctx.fillStyle = 'red';
-                ctx.fillRect(hurdle.x, hurdle.y, hurdleWidth, hurdleHeight);
+        // Draw hurdles
+        drawHurdles();
 
-                // Check for collision
-                if (
-                    character.x < hurdle.x + hurdleWidth &&
-                    character.x + character.width > hurdle.x &&
-                    character.y - jumpHeight + character.height > hurdle.y
-                ) {
-                    gameOver = true;
-                    alert('Game Over! You hit a hurdle. Try again!');
-                    document.location.reload();
-                }
+        // Score tracking
+        ctx.fillStyle = 'black';
+        ctx.font = '20px Arial';
+        ctx.fillText('Score: ' + score, 20, 30);
 
-                // Remove hurdles that have gone off screen
-                if (hurdle.x + hurdleWidth < 0) {
-                    hurdles.splice(i, 1);
-                    score++;
-                }
-            }
+        requestAnimationFrame(draw);
+    }
 
-            // Score tracking
-            ctx.fillStyle = 'black';
-            ctx.font = '20px Arial';
-            ctx.fillText('Score: ' + score, 20, 30);
-
-            requestAnimationFrame(draw);
-        }
-
-        // Game loop
-        setInterval(createHurdle, 2000); // Generate hurdles every 2 seconds
-        draw();
-    </script>
+    // Game loop
+    setInterval(createHurdle, 2000); // Generate hurdles every 2 seconds
+    draw();
+</script>
 
 </body>
 </html>

@@ -45,6 +45,12 @@
 
         // Load your sprite image (replace with your sprite's URL or path)
         character.sprite.src = 'me.png'; // <- Replace this with the path to your sprite image
+        let spriteLoaded = false;
+
+        // Ensure the image is loaded before drawing
+        character.sprite.onload = function() {
+            spriteLoaded = true;
+        };
 
         // Hurdle setup
         const hurdles = [];
@@ -78,8 +84,14 @@
 
         // Draw character sprite
         function drawCharacter() {
-            // Draw the character sprite image
-            ctx.drawImage(character.sprite, character.x, character.y - jumpHeight, character.width, character.height);
+            if (spriteLoaded) {
+                // Draw the character sprite image
+                ctx.drawImage(character.sprite, character.x, character.y - jumpHeight, character.width, character.height);
+            } else {
+                // Fallback: draw a blue square if the sprite isn't loaded yet
+                ctx.fillStyle = 'blue';
+                ctx.fillRect(character.x, character.y - jumpHeight, character.width, character.height);
+            }
 
             // Handle jump mechanics
             if (jumpHeight > 0) {

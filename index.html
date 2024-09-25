@@ -3,13 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Click the Button Game</title>
+    <title>Signature Game with Pop-up</title>
     <style>
-        body {
+        /* Signature style */
+        #signature {
             font-family: Arial, sans-serif;
-            text-align: center;
+            text-align: left;
             margin-top: 50px;
         }
+
+        /* Button to open the pop-up */
+        .open-game {
+            color: #007BFF;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* Modal background overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 999;
+        }
+
+        /* Modal content (game box) */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            z-index: 1000;
+            text-align: center;
+        }
+
+        /* Close button */
+        .close-btn {
+            background-color: #f44336;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
         button {
             padding: 15px;
             font-size: 20px;
@@ -18,9 +63,11 @@
             border: none;
             cursor: pointer;
         }
+
         button:hover {
             background-color: #45a049;
         }
+
         #score {
             font-size: 24px;
             margin-top: 20px;
@@ -29,16 +76,53 @@
 </head>
 <body>
 
-    <h1>Click the Button Game</h1>
-    <button onclick="increaseScore()">Click me!</button>
-    <p id="score">Score: 0</p>
+    <!-- Signature -->
+    <div id="signature">
+        <p>
+            Best regards,<br>
+            John Doe<br>
+            <span class="open-game">Play a quick game!</span>
+        </p>
+    </div>
 
+    <!-- Modal overlay -->
+    <div class="modal-overlay"></div>
+
+    <!-- Modal (Game in a Pop-up) -->
+    <div class="modal" id="game-modal">
+        <h1>Click the Button Game</h1>
+        <button onclick="increaseScore()">Click me!</button>
+        <p id="score">Score: 0</p>
+        <br>
+        <button class="close-btn" onclick="closeGame()">Close</button>
+    </div>
+
+    <!-- JavaScript to handle the pop-up and game -->
     <script>
         let score = 0;
+        const gameModal = document.getElementById("game-modal");
+        const modalOverlay = document.querySelector(".modal-overlay");
+
+        // Function to increase the score
         function increaseScore() {
             score++;
             document.getElementById('score').innerText = "Score: " + score;
         }
+
+        // Function to open the game modal
+        document.querySelector('.open-game').addEventListener('click', function() {
+            gameModal.style.display = "block";
+            modalOverlay.style.display = "block";
+        });
+
+        // Function to close the game modal
+        function closeGame() {
+            gameModal.style.display = "none";
+            modalOverlay.style.display = "none";
+            score = 0;
+            document.getElementById('score').innerText = "Score: " + score;
+        }
     </script>
+
 </body>
 </html>

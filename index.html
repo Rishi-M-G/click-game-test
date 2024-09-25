@@ -3,126 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signature Game with Pop-up</title>
+    <title>Job Hunt Runner</title>
     <style>
-        /* Signature style */
-        #signature {
+        body {
             font-family: Arial, sans-serif;
-            text-align: left;
-            margin-top: 50px;
-        }
-
-        /* Button to open the pop-up */
-        .open-game {
-            color: #007BFF;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-
-        /* Modal background overlay */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 999;
-        }
-
-        /* Modal content (game box) */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            z-index: 1000;
             text-align: center;
         }
-
-        /* Close button */
-        .close-btn {
-            background-color: #f44336;
-            color: white;
-            padding: 5px 10px;
-            border: none;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-
-        button {
-            padding: 15px;
-            font-size: 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        #score {
-            font-size: 24px;
-            margin-top: 20px;
+        canvas {
+            background: lightblue;
+            display: block;
+            margin: 0 auto;
         }
     </style>
 </head>
 <body>
 
-    <!-- Signature -->
-    <div id="signature">
-        <p>
-            Best regards,<br>
-            John Doe<br>
-            <span class="open-game">Play a quick game!</span>
-        </p>
-    </div>
-
-    <!-- Modal overlay -->
-    <div class="modal-overlay"></div>
-
-    <!-- Modal (Game in a Pop-up) -->
-    <div class="modal" id="game-modal">
-        <h1>Click the Button Game</h1>
-        <button onclick="increaseScore()">Click me!</button>
-        <p id="score">Score: 0</p>
-        <br>
-        <button class="close-btn" onclick="closeGame()">Close</button>
-    </div>
-
-    <!-- JavaScript to handle the pop-up and game -->
+    <h1>Job Hunt Runner</h1>
+    <p>Press Space to Jump! Avoid the hurdles and reach the job offer!</p>
+    <canvas id="gameCanvas" width="800" height="300"></canvas>
     <script>
-        let score = 0;
-        const gameModal = document.getElementById("game-modal");
-        const modalOverlay = document.querySelector(".modal-overlay");
+        // Basic setup
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
 
-        // Function to increase the score
-        function increaseScore() {
-            score++;
-            document.getElementById('score').innerText = "Score: " + score;
+        // Game Variables
+        let gameOver = false;
+        let score = 0;
+        let jumpHeight = 0;
+        let jumping = false;
+
+        // Character setup
+        const character = {
+            x: 50,
+            y: 250,
+            width: 30,
+            height: 30,
+            color: 'blue',
+            jump: false
+        };
+
+        // Hurdle setup
+        const hurdles = [];
+        const hurdleWidth = 20;
+        const hurdleHeight = 40;
+        const hurdleGap = 200;
+        let hurdleSpeed = 5;
+
+        // Jumping function
+        function handleJump() {
+            if (!jumping) {
+                jumping = true;
+                jumpHeight = 100; // Jump to 100px height
+            }
         }
 
-        // Function to open the game modal
-        document.querySelector('.open-game').addEventListener('click', function() {
-            gameModal.style.display = "block";
-            modalOverlay.style.display = "block";
+        // Key controls
+        document.addEventListener('keydown', function(event) {
+            if (event.code === 'Space') {
+                handleJump();
+            }
         });
 
-        // Function to close the game modal
-        function closeGame() {
-            gameModal.style.display = "none";
-            modalOverlay.style.display = "none";
-            score = 0;
-            document.getElementById('score').innerText = "Score: " + score;
+        // Hurdle creation
+        function createHurdle() {
+            hurdles.push({
+                x: canvas.width,
+                y: canvas.height - hurdleHeight
+            });
         }
-    </script>
 
+        // Draw function
+        function draw() {
+            if (gameOver) return;
+
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw character
+            ctx.fillStyle = character.color;
+            ctx.fillRect(character.x, character.y - jumpHeight, character.width, character.height);
+
+            // Handle jump mechanics
+            if (jumpHeight > 0) {
+                jumpHeight -= 5; // Control jump speed
+            } else {
+                jumping = false; // Back to ground
+            }
+
+            // Draw and update hurdles
+            for (let i = 0; i < hurdles.length; i++) {
+                let hurdle = hurdles[i];
+                hurdle.x -= hurdleSpeed;
+                ctx.fillStyle = 'red';
+                ctx.fillRect(hurdle.x, hurdle.y, hurdleWidth, hurdleHeight);
+
+                // Check for collision
+                if (
+                    character.x < hurdle.x + hurdleWidth &&
+                    character.x + character.width > hurdle.x &&
+                    character.y - jumpHeight + character.height > hurdle.y
+                ) {
+                    gameOver = true;
+                    alert('Game Over! You hit a hurdle. Try again!');
+                    document.location.reload();
+                }
+
+                // Remove hurdles that have gone off screen
+                if (hurdle.x + hurdleWidth < 0) {
+                    hurdles.splice(i, 1);
+                    score++;
+                }
+            }
+
+            // Score tracking
+            ctx.fillStyle = 'black';
+            ctx.font = '20px Arial';
+            ctx.fillText('Score: ' + score, 20, 30);
+
+            requestAnimationFrame(draw);
+        }
+
+        // Game loop
+        setInterval(createHurdle, 2000); // Generate hurdles every 2 seconds
+        draw();
+    </script>
 </body>
 </html>

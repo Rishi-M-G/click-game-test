@@ -58,11 +58,29 @@
         spriteLoaded = true;
     };
 
+    // Load images for obstacles
+    const obstacleImages = {
+        ats: new Image(),
+        interview: new Image(),
+        hr: new Image()
+    };
+
+    obstacleImages.ats.src = 'ats.png';
+    obstacleImages.interview.src = 'interview.png';
+    obstacleImages.hr.src = 'hr.png';
+
+    let imagesLoaded = 0;
+    for (let key in obstacleImages) {
+        obstacleImages[key].onload = function () {
+            imagesLoaded++;
+        };
+    }
+
     // Different types of obstacles
     const hurdleTypes = [
-        { label: 'ATS', color: 'red', width: 40, height: 60 },       // ATS Hurdle
-        { label: '?', color: 'green', width: 40, height: 60 },       // Interview Hurdle
-        { label: 'HR', color: 'blue', width: 40, height: 60 },       // HR Round Hurdle
+        { label: 'ATS', image: obstacleImages.ats, width: 40, height: 60 },       // ATS Hurdle
+        { label: 'Interview', image: obstacleImages.interview, width: 40, height: 60 }, // Interview Hurdle
+        { label: 'HR', image: obstacleImages.hr, width: 40, height: 60 },       // HR Round Hurdle
     ];
 
     // Hurdles setup
@@ -122,14 +140,14 @@
             let hurdle = hurdles[i];
             hurdle.x -= hurdleSpeed;
 
-            // Draw the hurdle
-            ctx.fillStyle = hurdle.type.color;
-            ctx.fillRect(hurdle.x, hurdle.y, hurdle.width, hurdle.height);
-
-            // Add the label on the hurdle (ATS, ?, HR)
-            ctx.fillStyle = 'white';
-            ctx.font = 'bold 20px Arial';
-            ctx.fillText(hurdle.type.label, hurdle.x + 10, hurdle.y + 40);
+            // Draw the hurdle with image
+            if (imagesLoaded === Object.keys(obstacleImages).length) {
+                ctx.drawImage(hurdle.type.image, hurdle.x, hurdle.y, hurdle.width, hurdle.height);
+            } else {
+                // Fallback: draw a rectangle if images aren't loaded yet
+                ctx.fillStyle = 'red';
+                ctx.fillRect(hurdle.x, hurdle.y, hurdle.width, hurdle.height);
+            }
 
             // Check for collision
             if (
@@ -175,6 +193,7 @@
     setInterval(createHurdle, 2000); // Generate hurdles every 2 seconds
     draw();
 </script>
+
 
 </body>
 </html>

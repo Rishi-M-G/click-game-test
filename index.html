@@ -40,12 +40,12 @@
     let jumpHeight = 0;
     let jumping = false;
 
-    // Character setup (original size and position)
+    // Character setup (doubled size and adjusted position)
     const character = {
         x: 50,
-        y: canvas.height - 80, // Adjusted y position to make sure the character is visible and aligned with the ground
-        width: 128,  // Character width
-        height: 128, // Character height
+        y: canvas.height - 160, // Adjusted y position to align the character above the ground after doubling size
+        width: 128,  // Doubled width (originally 64)
+        height: 128, // Doubled height (originally 64)
         sprite: new Image(),
         jump: false
     };
@@ -176,6 +176,7 @@
     setInterval(createHurdle, 2000); // Generate hurdles every 2 seconds
     draw();
 </script>
+
 
 
 

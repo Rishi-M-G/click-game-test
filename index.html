@@ -40,10 +40,10 @@
     let jumpHeight = 0;
     let jumping = false;
 
-    // Character setup (increased size to make it more prominent)
+    // Character setup (increased size and adjusted position)
     const character = {
         x: 50,
-        y: 250,
+        y: canvas.height - 90, // Adjusted y position so the character is properly placed above the ground
         width: 80,  // Increased width
         height: 80, // Increased height
         sprite: new Image(),
@@ -201,6 +201,7 @@
     setInterval(createHurdle, 2000); // Generate hurdles every 2 seconds
     draw();
 </script>
+
 
 
 

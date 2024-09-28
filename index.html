@@ -58,12 +58,12 @@
         spriteLoaded = true;
     };
 
-    // Different types of obstacles as labeled blocks (adjusted size to balance with character)
+    // Different types of obstacles as labeled blocks (compact size to balance with character)
     const hurdleTypes = [
-        { label: 'ATS', color: 'red', width: 40, height: 50 },        // ATS Hurdle
-        { label: 'Interview', color: 'green', width: 40, height: 50 }, // Interview Hurdle
-        { label: 'HR', color: 'blue', width: 40, height: 50 },         // HR Round Hurdle
-        { label: 'Coding', color: 'orange', width: 40, height: 50 }    // Coding Test Hurdle
+        { label: 'ATS', color: 'red', width: 40, height: 25 },        // ATS Hurdle
+        { label: 'Interview', color: 'green', width: 40, height: 25 }, // Interview Hurdle
+        { label: 'HR', color: 'blue', width: 40, height: 25 },         // HR Round Hurdle
+        { label: 'Coding', color: 'orange', width: 40, height: 25 }    // Coding Test Hurdle
     ];
 
     // Hurdles setup
@@ -130,7 +130,7 @@
             // Add label on the obstacle
             ctx.fillStyle = 'white';
             ctx.font = 'bold 10px Arial';
-            ctx.fillText(hurdle.type.label, hurdle.x + 5, hurdle.y + hurdle.height / 1.5);
+            ctx.fillText(hurdle.type.label, hurdle.x + 2, hurdle.y + hurdle.height / 1.5);
 
             // Check for collision
             if (
@@ -176,6 +176,7 @@
     setInterval(createHurdle, 2000); // Generate hurdles every 2 seconds
     draw();
 </script>
+
 
 </body>
 </html>

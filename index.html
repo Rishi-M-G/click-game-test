@@ -132,19 +132,19 @@
             ctx.font = 'bold 10px Arial';
             ctx.fillText(hurdle.type.label, hurdle.x + 2, hurdle.y + hurdle.height / 1.5);
 
-            // Check for collision with smaller hitboxes for a better experience
+            // Check for collision with slightly reduced hitboxes for balance
             const characterHitbox = {
-                x: character.x + 10,
-                y: character.y - jumpHeight + 10,
-                width: character.width - 20,
-                height: character.height - 20
+                x: character.x + 5,  // Reduced x-padding
+                y: character.y - jumpHeight + 5,  // Reduced y-padding
+                width: character.width - 10,  // Less reduction to width
+                height: character.height - 10 // Less reduction to height
             };
 
             const hurdleHitbox = {
-                x: hurdle.x + 5,
-                y: hurdle.y + 5,
-                width: hurdle.width - 10,
-                height: hurdle.height - 10
+                x: hurdle.x + 2,  // Reduced x-padding for hurdle
+                y: hurdle.y + 2,  // Reduced y-padding for hurdle
+                width: hurdle.width - 4,  // Slight reduction to width
+                height: hurdle.height - 4 // Slight reduction to height
             };
 
             if (
@@ -191,6 +191,7 @@
     setInterval(createHurdle, 2000); // Generate hurdles every 2 seconds
     draw();
 </script>
+
 
 
 

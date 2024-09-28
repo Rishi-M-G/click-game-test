@@ -60,10 +60,10 @@
 
     // Different types of obstacles as labeled blocks (compact size to balance with character)
     const hurdleTypes = [
-        { label: 'ATS', color: 'red', width: 40, height: 25 },        // ATS Hurdle
-        { label: 'Interview', color: 'green', width: 40, height: 25 }, // Interview Hurdle
-        { label: 'HR', color: 'blue', width: 40, height: 25 },         // HR Round Hurdle
-        { label: 'Coding', color: 'orange', width: 40, height: 25 }    // Coding Test Hurdle
+        { label: 'ATS', color: 'red', width: 40, height: 25, message: "Oops! Rejected by the Applicant Tracking System! Looks like you need more keywords in your resume!" }, // ATS Hurdle
+        { label: 'Interview', color: 'green', width: 40, height: 25, message: "Oh no! Stumped by an interview question. Maybe practice those technical questions a bit more!" }, // Interview Hurdle
+        { label: 'HR', color: 'blue', width: 40, height: 25, message: "Oops! The HR round went south. Better work on those people skills!" }, // HR Round Hurdle
+        { label: 'Coding', color: 'orange', width: 40, height: 25, message: "Yikes! The coding test failed. Remember, always run your code before submitting!" } // Coding Test Hurdle
     ];
 
     // Hurdles setup
@@ -153,8 +153,9 @@
                 characterHitbox.y < hurdleHitbox.y + hurdleHitbox.height &&
                 characterHitbox.y + characterHitbox.height > hurdleHitbox.y
             ) {
+                // Display the humorous dialogue specific to the block type
+                alert(hurdle.type.message);
                 gameOver = true;
-                alert('Game Over! You hit a hurdle. Try again!');
                 document.location.reload();
             }
 
@@ -191,6 +192,7 @@
     setInterval(createHurdle, 2000); // Generate hurdles every 2 seconds
     draw();
 </script>
+
 
 
 

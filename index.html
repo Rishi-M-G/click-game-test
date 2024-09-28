@@ -132,11 +132,26 @@
             ctx.font = 'bold 10px Arial';
             ctx.fillText(hurdle.type.label, hurdle.x + 2, hurdle.y + hurdle.height / 1.5);
 
-            // Check for collision
+            // Check for collision with smaller hitboxes for a better experience
+            const characterHitbox = {
+                x: character.x + 10,
+                y: character.y - jumpHeight + 10,
+                width: character.width - 20,
+                height: character.height - 20
+            };
+
+            const hurdleHitbox = {
+                x: hurdle.x + 5,
+                y: hurdle.y + 5,
+                width: hurdle.width - 10,
+                height: hurdle.height - 10
+            };
+
             if (
-                character.x < hurdle.x + hurdle.width &&
-                character.x + character.width > hurdle.x &&
-                character.y - jumpHeight + character.height > hurdle.y
+                characterHitbox.x < hurdleHitbox.x + hurdleHitbox.width &&
+                characterHitbox.x + characterHitbox.width > hurdleHitbox.x &&
+                characterHitbox.y < hurdleHitbox.y + hurdleHitbox.height &&
+                characterHitbox.y + characterHitbox.height > hurdleHitbox.y
             ) {
                 gameOver = true;
                 alert('Game Over! You hit a hurdle. Try again!');
@@ -176,6 +191,7 @@
     setInterval(createHurdle, 2000); // Generate hurdles every 2 seconds
     draw();
 </script>
+
 
 
 </body>

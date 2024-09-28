@@ -40,10 +40,10 @@
     let jumpHeight = 0;
     let jumping = false;
 
-    // Character setup (doubled size and adjusted position)
+    // Character setup (doubled size and properly adjusted position)
     const character = {
         x: 50,
-        y: canvas.height - 160, // Adjusted y position to align the character above the ground after doubling size
+        y: canvas.height - 128, // Adjusted y position to ensure the character is properly on the ground
         width: 128,  // Doubled width (originally 64)
         height: 128, // Doubled height (originally 64)
         sprite: new Image(),
@@ -60,10 +60,10 @@
 
     // Different types of obstacles as labeled blocks
     const hurdleTypes = [
-        { label: 'ATS', color: 'red', width: 50, height: 30 },        // ATS Hurdle
-        { label: 'Interview', color: 'green', width: 50, height: 30 }, // Interview Hurdle
-        { label: 'HR', color: 'blue', width: 50, height: 30 },         // HR Round Hurdle
-        { label: 'Coding', color: 'orange', width: 50, height: 30 }    // Coding Test Hurdle
+        { label: 'ATS', color: 'red', width: 40, height: 40 },        // ATS Hurdle
+        { label: 'Interview', color: 'green', width: 40, height: 40 }, // Interview Hurdle
+        { label: 'HR', color: 'blue', width: 40, height: 40 },         // HR Round Hurdle
+        { label: 'Coding', color: 'orange', width: 40, height: 40 }    // Coding Test Hurdle
     ];
 
     // Hurdles setup
@@ -176,6 +176,7 @@
     setInterval(createHurdle, 2000); // Generate hurdles every 2 seconds
     draw();
 </script>
+
 
 
 

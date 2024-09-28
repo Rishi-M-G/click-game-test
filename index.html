@@ -31,7 +31,7 @@
     <p>Press Space to Jump! Avoid the hurdles and reach the job offer!</p>
     <canvas id="gameCanvas" width="800" height="300"></canvas>
 
-    <script>
+   <script>
     // Game Variables
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
@@ -39,6 +39,7 @@
     let score = 0;
     let jumpHeight = 0;
     let jumping = false;
+    let jumpForwardDistance = 0;
 
     // Character setup (64x64 dimensions)
     const character = {
@@ -62,12 +63,14 @@
     const obstacleImages = {
         ats: new Image(),
         interview: new Image(),
-        hr: new Image()
+        hr: new Image(),
+        coding: new Image() // Added new obstacle image for coding test
     };
 
     obstacleImages.ats.src = 'ats.png';
     obstacleImages.interview.src = 'interview.png';
     obstacleImages.hr.src = 'hr.png';
+    obstacleImages.coding.src = 'coding.png';
 
     let imagesLoaded = 0;
     for (let key in obstacleImages) {
@@ -78,9 +81,10 @@
 
     // Different types of obstacles
     const hurdleTypes = [
-        { label: 'ATS', image: obstacleImages.ats, width: 40, height: 60 },       // ATS Hurdle
+        { label: 'ATS', image: obstacleImages.ats, width: 40, height: 60 },        // ATS Hurdle
         { label: 'Interview', image: obstacleImages.interview, width: 40, height: 60 }, // Interview Hurdle
-        { label: 'HR', image: obstacleImages.hr, width: 40, height: 60 },       // HR Round Hurdle
+        { label: 'HR', image: obstacleImages.hr, width: 40, height: 60 },           // HR Round Hurdle
+        { label: 'Coding Test', image: obstacleImages.coding, width: 40, height: 60 } // Coding Test Hurdle
     ];
 
     // Hurdles setup
@@ -93,6 +97,7 @@
         if (!jumping) {
             jumping = true;
             jumpHeight = 150; // Adjusted jump height for 64x64 character
+            jumpForwardDistance = 10; // Set initial forward distance for jump
         }
     }
 
@@ -119,18 +124,20 @@
     function drawCharacter() {
         if (spriteLoaded) {
             // Draw character sprite image
-            ctx.drawImage(character.sprite, character.x, character.y - jumpHeight, character.width, character.height);
+            ctx.drawImage(character.sprite, character.x + jumpForwardDistance, character.y - jumpHeight, character.width, character.height);
         } else {
             // Draw a blue box if sprite isn't loaded yet
             ctx.fillStyle = 'blue';
-            ctx.fillRect(character.x, character.y - jumpHeight, character.width, character.height);
+            ctx.fillRect(character.x + jumpForwardDistance, character.y - jumpHeight, character.width, character.height);
         }
 
         // Handle jump mechanics
         if (jumpHeight > 0) {
             jumpHeight -= 5; // Control jump descent speed
+            jumpForwardDistance += 2; // Move forward while in the air
         } else {
             jumping = false; // Back to ground
+            jumpForwardDistance = 0; // Reset forward distance
         }
     }
 
@@ -143,6 +150,11 @@
             // Draw the hurdle with image
             if (imagesLoaded === Object.keys(obstacleImages).length) {
                 ctx.drawImage(hurdle.type.image, hurdle.x, hurdle.y, hurdle.width, hurdle.height);
+
+                // Add label below the obstacle image
+                ctx.fillStyle = 'black';
+                ctx.font = 'bold 14px Arial';
+                ctx.fillText(hurdle.type.label, hurdle.x, hurdle.y + hurdle.height + 15);
             } else {
                 // Fallback: draw a rectangle if images aren't loaded yet
                 ctx.fillStyle = 'red';
@@ -151,8 +163,8 @@
 
             // Check for collision
             if (
-                character.x < hurdle.x + hurdle.width &&
-                character.x + character.width > hurdle.x &&
+                character.x + jumpForwardDistance < hurdle.x + hurdle.width &&
+                character.x + jumpForwardDistance + character.width > hurdle.x &&
                 character.y - jumpHeight + character.height > hurdle.y
             ) {
                 gameOver = true;

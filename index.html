@@ -40,7 +40,7 @@
     let jumpHeight = 0;
     let jumping = false;
 
-    // Character setup (revised size and position)
+    // Character setup (original size and position)
     const character = {
         x: 50,
         y: canvas.height - 80, // Adjusted y position to make sure the character is visible and aligned with the ground
@@ -60,10 +60,10 @@
 
     // Different types of obstacles as labeled blocks
     const hurdleTypes = [
-        { label: 'ATS', color: 'red', width: 60, height: 40 },        // ATS Hurdle
-        { label: 'Interview', color: 'green', width: 60, height: 40 }, // Interview Hurdle
-        { label: 'HR', color: 'blue', width: 60, height: 40 },         // HR Round Hurdle
-        { label: 'Coding', color: 'orange', width: 60, height: 40 }    // Coding Test Hurdle
+        { label: 'ATS', color: 'red', width: 50, height: 30 },        // ATS Hurdle
+        { label: 'Interview', color: 'green', width: 50, height: 30 }, // Interview Hurdle
+        { label: 'HR', color: 'blue', width: 50, height: 30 },         // HR Round Hurdle
+        { label: 'Coding', color: 'orange', width: 50, height: 30 }    // Coding Test Hurdle
     ];
 
     // Hurdles setup
@@ -129,7 +129,7 @@
 
             // Add label on the obstacle
             ctx.fillStyle = 'white';
-            ctx.font = 'bold 12px Arial';
+            ctx.font = 'bold 10px Arial';
             ctx.fillText(hurdle.type.label, hurdle.x + 5, hurdle.y + hurdle.height / 1.5);
 
             // Check for collision
@@ -176,6 +176,7 @@
     setInterval(createHurdle, 2000); // Generate hurdles every 2 seconds
     draw();
 </script>
+
 
 
 

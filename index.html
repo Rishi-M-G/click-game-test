@@ -40,12 +40,12 @@
     let jumpHeight = 0;
     let jumping = false;
 
-    // Character setup (original size and position)
+    // Character setup (revised size and position)
     const character = {
         x: 50,
-        y: 250, // Original y position
-        width: 64,  // Original width
-        height: 64, // Original height
+        y: canvas.height - 80, // Adjusted y position to make sure the character is visible and aligned with the ground
+        width: 64,  // Character width
+        height: 64, // Character height
         sprite: new Image(),
         jump: false
     };
@@ -60,10 +60,10 @@
 
     // Different types of obstacles as labeled blocks
     const hurdleTypes = [
-        { label: 'ATS', color: 'red', width: 40, height: 60 },        // ATS Hurdle
-        { label: 'Interview', color: 'green', width: 40, height: 60 }, // Interview Hurdle
-        { label: 'HR', color: 'blue', width: 40, height: 60 },         // HR Round Hurdle
-        { label: 'Coding Test', color: 'orange', width: 40, height: 60 } // Coding Test Hurdle
+        { label: 'ATS', color: 'red', width: 60, height: 40 },        // ATS Hurdle
+        { label: 'Interview', color: 'green', width: 60, height: 40 }, // Interview Hurdle
+        { label: 'HR', color: 'blue', width: 60, height: 40 },         // HR Round Hurdle
+        { label: 'Coding', color: 'orange', width: 60, height: 40 }    // Coding Test Hurdle
     ];
 
     // Hurdles setup
@@ -75,7 +75,7 @@
     function handleJump() {
         if (!jumping) {
             jumping = true;
-            jumpHeight = 150; // Adjusted jump height
+            jumpHeight = 150; // Jump height to clear obstacles
         }
     }
 
@@ -129,8 +129,8 @@
 
             // Add label on the obstacle
             ctx.fillStyle = 'white';
-            ctx.font = 'bold 14px Arial';
-            ctx.fillText(hurdle.type.label, hurdle.x + 5, hurdle.y + hurdle.height / 2);
+            ctx.font = 'bold 12px Arial';
+            ctx.fillText(hurdle.type.label, hurdle.x + 5, hurdle.y + hurdle.height / 1.5);
 
             // Check for collision
             if (
@@ -176,6 +176,8 @@
     setInterval(createHurdle, 2000); // Generate hurdles every 2 seconds
     draw();
 </script>
+
+
 
 
 

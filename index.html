@@ -39,14 +39,13 @@
     let score = 0;
     let jumpHeight = 0;
     let jumping = false;
-    let jumpForwardDistance = 0;
 
-    // Character setup (64x64 dimensions)
+    // Character setup (increased size to make it more prominent)
     const character = {
         x: 50,
         y: 250,
-        width: 64,  // Adjusted to match your sprite's dimensions
-        height: 64,
+        width: 80,  // Increased width
+        height: 80, // Increased height
         sprite: new Image(),
         jump: false
     };
@@ -96,8 +95,7 @@
     function handleJump() {
         if (!jumping) {
             jumping = true;
-            jumpHeight = 150; // Adjusted jump height for 64x64 character
-            jumpForwardDistance = 10; // Set initial forward distance for jump
+            jumpHeight = 150; // Adjusted jump height for larger character
         }
     }
 
@@ -124,20 +122,18 @@
     function drawCharacter() {
         if (spriteLoaded) {
             // Draw character sprite image
-            ctx.drawImage(character.sprite, character.x + jumpForwardDistance, character.y - jumpHeight, character.width, character.height);
+            ctx.drawImage(character.sprite, character.x, character.y - jumpHeight, character.width, character.height);
         } else {
             // Draw a blue box if sprite isn't loaded yet
             ctx.fillStyle = 'blue';
-            ctx.fillRect(character.x + jumpForwardDistance, character.y - jumpHeight, character.width, character.height);
+            ctx.fillRect(character.x, character.y - jumpHeight, character.width, character.height);
         }
 
         // Handle jump mechanics
         if (jumpHeight > 0) {
             jumpHeight -= 5; // Control jump descent speed
-            jumpForwardDistance += 2; // Move forward while in the air
         } else {
             jumping = false; // Back to ground
-            jumpForwardDistance = 0; // Reset forward distance
         }
     }
 
@@ -163,8 +159,8 @@
 
             // Check for collision
             if (
-                character.x + jumpForwardDistance < hurdle.x + hurdle.width &&
-                character.x + jumpForwardDistance + character.width > hurdle.x &&
+                character.x < hurdle.x + hurdle.width &&
+                character.x + character.width > hurdle.x &&
                 character.y - jumpHeight + character.height > hurdle.y
             ) {
                 gameOver = true;
@@ -205,6 +201,7 @@
     setInterval(createHurdle, 2000); // Generate hurdles every 2 seconds
     draw();
 </script>
+
 
 
 </body>
